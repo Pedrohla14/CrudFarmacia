@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using ProjetoPagueMenos.Models;
+using System.Text.Json.Serialization;
 
 namespace crudFarmaciaPagueMenos
 {
@@ -20,6 +21,11 @@ namespace crudFarmaciaPagueMenos
             (options => options.UseSqlServer
             (@"Data Source=LAPTOP-6F1LL6RB\SQLEXPRESS;Initial Catalog=crudFarmacia;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"));
 
+            builder.Services.AddControllers().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+                options.JsonSerializerOptions.WriteIndented = true;
+            });
 
 
             var app = builder.Build();

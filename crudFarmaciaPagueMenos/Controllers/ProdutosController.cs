@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using ProjetoPagueMenos.Models;
 
@@ -19,27 +20,29 @@ namespace crudFarmaciaPagueMenos.Controllers
         }
 
         // GET: api/<ProdutosController>
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Produto>>>ListarProdutos()
+        [HttpGet("BuscarProduto")]
+        public async Task<ActionResult<IEnumerable<Produto>>> BuscarProduto()
         {
-            if (_contexto.Produto == null)
+            if (_contexto.Produtos == null)
             {
                 return NotFound();
             }
-            return await _contexto.Produto.ToListAsync();
+            return await _contexto.Produtos.ToListAsync();
         }
 
         // GET api/<ProdutosController>/5
-        [HttpGet("{id}")]
+        [HttpGet("BuscarProduto/{id}")]
         public async Task<ActionResult<Produto>> BuscarProduto(int id)
         {
-            if (_contexto.Produto == null)
+            if (_contexto.Produtos == null)
             {
                 return NotFound();
             }
-            var produto = await _contexto.Produto.FindAsync(id);
+            var produto = await _contexto.Produtos
+                .Include(x => x.Loja)
+                .FirstOrDefaultAsync(x => x.Id == id);
 
-            if(produto == null)
+            if (produto == null)
             {
                 return NotFound();
             }
@@ -47,17 +50,27 @@ namespace crudFarmaciaPagueMenos.Controllers
             return produto;
         }
 
+        // GET api/<ProdutosController>/5
+        [HttpGet("BuscarProdutoPorLoja/{id}")]
+        public async Task<ActionResult<List<Produto>>> BuscarProdutoPorLoja(int id)
+        {
+            return _contexto.Produtos
+                .FromSqlInterpolated($"SELECT * From Produtos Where LojaId = {id}")
+                .ToList();
+        }
+
         // POST api/<ProdutosController>
-        [HttpPost]
-        public async Task<ActionResult<Produto>> CadastrarProduto(Produto produto){
-            _contexto.Produto.Add(produto);
+        [HttpPost(" CadastrarProduto")]
+        public async Task<ActionResult<Produto>> CadastrarProduto(Produto produto)
+        {
+            _contexto.Produtos.Add(produto);
             await _contexto.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(BuscarProduto), new {id=produto.Id},produto);   
+            return CreatedAtAction(nameof(BuscarProduto), new { id = produto.Id }, produto);
         }
 
         // PUT api/<ProdutosController>/5
-        [HttpPut("{id}")]
+        [HttpPut("AtualizarProduto/{id}")]
         public async Task<ActionResult<Produto>> AtualizarProduto(int id,Produto produto)
         {
             if(id!= produto.Id)
@@ -84,20 +97,20 @@ namespace crudFarmaciaPagueMenos.Controllers
         }
 
         // DELETE api/<ProdutosController>/5
-        [HttpDelete("{id}")]
+        [HttpDelete("DeletarProduto/{id}")]
         public async Task<ActionResult> DeletarProduto(int id)
         {
-            if(_contexto.Produto==null)
+            if(_contexto.Produtos==null)
             {
                 return NotFound();
             }
-            var produto = await _contexto.Produto.FindAsync(id);
+            var produto = await _contexto.Produtos.FindAsync(id);
 
             if (produto == null)
             {
                 return NotFound();
             }
-            _contexto.Produto.Remove(produto);
+            _contexto.Produtos.Remove(produto);
             await _contexto.SaveChangesAsync();
 
             return NoContent();
@@ -105,7 +118,7 @@ namespace crudFarmaciaPagueMenos.Controllers
 
         private bool ProdutoExits(long id)
         {
-            return (_contexto.Produto?.Any(x => x.Id == id)).GetValueOrDefault();
+            return (_contexto.Produtos?.Any(x => x.Id == id)).GetValueOrDefault();
         }
     }
 }
