@@ -17,3 +17,7 @@
 ### URL : https://localhost:7093/swagger/index.html 
 ![image](https://user-images.githubusercontent.com/94800633/213514842-80c7cb15-5d93-433d-bced-cefe58df599e.png)
 
+## A modelagem no Banco de dados foi que uma farmácia tem muitos produtos e um produto pertence à uma farmácia. Segue alguns dados inseridos atráves do swagger.
+![image](https://user-images.githubusercontent.com/94800633/213544550-347a2f6d-92b2-448e-a602-76e1b8c9a0c8.png)
+
+
