@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using crudFarmaciaPagueMenos.DTO;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using ProjetoPagueMenos.Models;
@@ -50,6 +51,28 @@ namespace crudFarmaciaPagueMenos.Controllers
             return produto;
         }
 
+       // Buscando os Produtos com o Desconto do Cliente
+       [HttpGet("BuscarProdutoCliente/{id}")]
+        public async Task<ActionResult<List<ProdutoDTO>>> BuscarProdutoPorClientes(int id)
+        {
+
+            if (_contexto.Produtos == null)
+            {
+                return NotFound();
+            }
+
+            var usuario = await _contexto.Usuarios
+                .Include(x => x.Desconto)
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+
+            List<Produto> produtos = await _contexto.Produtos.ToListAsync();
+            List<ProdutoDTO> produtoDTOs = produtos
+                                           .Select(p => new ProdutoDTO ( p,usuario.Desconto.valor)).ToList();
+
+            return produtoDTOs;
+        }
+
         // GET api/<ProdutosController>/5
         [HttpGet("BuscarProdutoPorLoja/{id}")]
         public async Task<ActionResult<List<Produto>>> BuscarProdutoPorLoja(int id)
@@ -61,8 +84,10 @@ namespace crudFarmaciaPagueMenos.Controllers
 
         // POST api/<ProdutosController>
         [HttpPost(" CadastrarProduto")]
-        public async Task<ActionResult<Produto>> CadastrarProduto(Produto produto)
+        public async Task<ActionResult<Produto>> CadastrarProduto([FromBody] ProdutoDTO produtodto)
         {
+            Produto produto=new Produto(produtodto);
+
             _contexto.Produtos.Add(produto);
             await _contexto.SaveChangesAsync();
 

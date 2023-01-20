@@ -22,6 +22,59 @@ namespace crudFarmaciaPagueMenos.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("crudFarmaciaPagueMenos.Models.Desconto", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Categoria")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("valor")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Descontos");
+                });
+
+            modelBuilder.Entity("crudFarmaciaPagueMenos.Models.Usuario", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("CPF")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DataDeNascimento")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("DescontoId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DescontoId");
+
+                    b.ToTable("Usuarios");
+                });
+
             modelBuilder.Entity("ProjetoPagueMenos.Models.Loja", b =>
                 {
                     b.Property<int>("Id")
@@ -71,6 +124,15 @@ namespace crudFarmaciaPagueMenos.Migrations
                     b.ToTable("Produtos");
                 });
 
+            modelBuilder.Entity("crudFarmaciaPagueMenos.Models.Usuario", b =>
+                {
+                    b.HasOne("crudFarmaciaPagueMenos.Models.Desconto", "Desconto")
+                        .WithMany("Usuarios")
+                        .HasForeignKey("DescontoId");
+
+                    b.Navigation("Desconto");
+                });
+
             modelBuilder.Entity("ProjetoPagueMenos.Models.Produto", b =>
                 {
                     b.HasOne("ProjetoPagueMenos.Models.Loja", "Loja")
@@ -78,6 +140,11 @@ namespace crudFarmaciaPagueMenos.Migrations
                         .HasForeignKey("LojaId");
 
                     b.Navigation("Loja");
+                });
+
+            modelBuilder.Entity("crudFarmaciaPagueMenos.Models.Desconto", b =>
+                {
+                    b.Navigation("Usuarios");
                 });
 
             modelBuilder.Entity("ProjetoPagueMenos.Models.Loja", b =>

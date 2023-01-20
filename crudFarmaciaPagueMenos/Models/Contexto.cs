@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using crudFarmaciaPagueMenos.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ProjetoPagueMenos.Models
 {
@@ -12,11 +13,19 @@ namespace ProjetoPagueMenos.Models
 
         public DbSet<Loja> Lojas { get; set; }
 
+        public DbSet<Usuario> Usuarios { get; set; }
+
+        public DbSet<Desconto> Descontos { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Produto>()
                 .HasOne(x => x.Loja)
                 .WithMany(x => x.Produtos);
+
+            builder.Entity<Usuario>()
+             .HasOne(x => x.Desconto)
+             .WithMany(x => x.Usuarios);
         }
     }
 }
