@@ -20,4 +20,9 @@
 ## A modelagem no Banco de dados foi que uma farmácia tem muitos produtos e um produto pertence à uma farmácia. Segue alguns dados inseridos atráves do swagger.
 ![image](https://user-images.githubusercontent.com/94800633/213544550-347a2f6d-92b2-448e-a602-76e1b8c9a0c8.png)
 
-
+## Funcionalidades Extras
+### Nessa parte foi implementa a tabela Usuario e Desconto, no qual o Usuario pode ter um desconto, nesse desconto tem os atributos categoria,
+para poder informar que tipo de desconto o cliente tem e tem o campo valor que é em porcentagem. No Controller de Produtos fiz um endPoint que busca produtos,
+associados ao cliente e irá mostrar o preço do produto original,o valor do desconto e o preço atual, vale lembrar que esse cálculo é feito em tempo de execução
+e não está sendo salvo no banco.
+![image](https://user-images.githubusercontent.com/94800633/213681186-52e78030-af99-410a-a93a-49a138b9f9a4.png)
